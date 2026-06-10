@@ -1,0 +1,330 @@
+---
+name: text2echart
+name-zh: Data to Chart
+provider: openclaw
+description: >
+  Chart generator skill. When triggered:
+  - Default: CONSTRUCT ECharts option JSON and output HTML string directly and render by mermaid and support preview.
+  - Image / vector (图片/矢量图): use CLI with --svg --embed output.
+  - Screenshot (截图): use CLI with --screenshot output.
+  - Fine-tuning (微调/修改): open browser for interactive adjustment.
+  Supports 6 chart types: bar, line, pie, scatter, radar, wordcloud.
+  Trigger words: chart, graph, visualize, plot, draw, wordcloud, vent draw图表, 画图, 可视化, 图片, 矢量图, html, web, 源码, 页面, 词云.
+metadata:
+  version: "2.0.3"
+  launch: "text2echarts.html"
+  trigger-keywords:
+    - chart
+    - graph
+    - visualize
+    - plot
+    - make a chart
+    - draw a graph
+    - 图表
+    - 画图
+    - 可视化
+    - 柱状图
+    - 饼图
+    - 图片
+    - 矢量图
+    - html
+    - web
+    - 源码
+    - 页面
+    - wordcloud
+    - vent draw
+    - 词云
+  tags:
+    - visualization
+    - echarts
+    - chart
+    - data-viz
+    - svg
+---
+
+# text2echart — Data to Chart
+
+## ⚡ Routing
+
+case when: user asks for a chart / graph / visualization (default):
+  - Construct ECharts option JSON
+  - Output HTML string directly, render with ```html code block
+  - Support preview by opening in browser or screenshot
+
+case when: user asks for an image / picture / vector graphic (图片/矢量图):
+  - Use CLI with SVG + embed: `node cli.js data.json --svg --embed --svg-output -o chart.svg`
+  - `--svg` enables SVG renderer, `--embed` bundles ECharts lib for offline, `--svg-output` extracts standalone .svg file
+  - SVG is vector format — sharp at any resolution, ideal for documents
+  - Also send PNG screenshot for instant preview
+
+case when: user asks for html / web / source / page (html/web/源码/页面):
+  - Generate HTML with CLI: `node cli.js data.json --svg -o chart.html`
+  - Read the generated HTML file and output as code block: ` ```html ... ``` `
+  - User can copy-paste and save as .html to open in browser
+
+case when: user asks for a screenshot / snapshot (截图):
+  - Use CLI with screenshot output: `node cli.js data.json --screenshot chart.png`
+  - This generates high-quality raster PNG via Playwright
+
+case when: user wants to fine-tune / adjust / modify the chart (微调/修改):
+  - Open browser: `node cli.js data.json --open`
+  - Or open the generated HTML directly for interactive editing
+
+case when: user asks to save to file / run locally:
+  - Use CLI: `node cli.js data.json -o chart.html`
+  - Can combine with --open or --screenshot
+
+case when: user asks for word cloud (词云):
+  - Need word frequency data first (分词 + 词频统计)
+  - Generate ECharts wordcloud option JSON with type:'wordCloud'
+  - Then follow image/vector or html/web route based on output format request
+  - Point to `web/text2echarts.html`
+  - Open in browser, use templates and export
+
+---
+
+## Output Format
+
+```html
+<!DOCTYPE html><html lang="en"><head>...echarts CDN...<style>...</style></head><body><div id="chart"></div><script>...echarts option...</script></body></html>
+```
+
+---
+
+## Overview
+
+Generate ECharts SVG charts from JSON/CSV. Two entry points:
+
+**Web App**: Open `web/text2echarts.html` in browser for interactive GUI with templates, live preview, theme switching, and PNG/JPG/SVG export.
+
+**CLI**: `node cli.js` for scripted/batch generation.
+
+## When to Use / When Not to Use
+
+| Scenario | Use text2echart? |
+|----------|-----------------|
+| "Make a bar chart from this CSV" | ✅ Best fit |
+| "Visualize my sales data" | ✅ Natural language input works |
+| "Compare trends across months" | ✅ Line chart, multi-series |
+| "Show market share distribution" | ✅ Pie chart with % labels |
+| "I need an interactive chart dashboard" | ⚠️ Open web/text2echarts.html instead |
+| "Animate this chart frame by frame" | ❌ ECharts not designed for animation frames |
+| "Generate 100 charts in batch" | ✅ Use CLI: `for f in *.csv; do node cli.js \$f; done` |
+| "Real-time streaming data" | ❌ Use ECharts live update API directly |
+
+## Quick Start
+
+```bash
+# Web App — open interactive GUI
+open web/text2echarts.html
+
+# CLI — CSV → chart
+node cli.js data.csv --open
+
+# CLI — JSON → SVG
+node cli.js chart.json -o report.html
+```
+
+## Supported Inputs
+
+| Format | Example | Auto-detected |
+|--------|---------|---------------|
+| **CSV** | `Month,Sales\nJan,1200\nFeb,900` | ✅ yes (comma in first line) |
+| **JSON** | `{"series":[{"type":"bar","data":[30,80]}]}` | ✅ yes (starts with `{`) |
+| **JSON (simple)** | `{"type":"bar","data":[{"name":"A","value":30}]}` | ✅ yes |
+| **Stdin pipe** | `cat data.csv \| node cli.js -` | ✅ use `-` |
+
+## CLI Reference
+
+```bash
+node cli.js <input> [options]
+
+Options:
+  -o, --out <file>   Output file name
+  --type <type>      Chart type for CSV: bar|line|pie|radar
+  --theme <name>     dark|infographic|macarons|roma|shine|vintage
+  --width / --height Chart dimensions
+  --svg              SVG renderer (default)
+  --open             Open in browser after generation
+  --embed            Embed ECharts lib for offline (~1MB)
+  --slide            960x540 PPT slide mode
+```
+
+## Chart Types
+
+| Type | CSV columns | Auto features |
+|------|-------------|---------------|
+| bar | col1=labels, col2+=values | Rounded corners, top labels |
+| line | col1=labels, col2+=values | Smooth curves, area fill |
+| pie | col1=name, col2=value | Donut chart, % labels |
+| scatter | col1=x, col2=y | Bubble symbols |
+| radar | col1=dimension, col2+=values | Polygon shape |
+| wordcloud | col1=word, col2=frequency | Diamond shape |
+
+## Themes
+
+| Theme | Style | Background |
+|-------|-------|------------|
+| dark | Tech, deep blue | #1a1a2e |
+| infographic | Clean report | #f5f5f5 |
+| macarons | Soft, business | #f5f5f5 |
+| vintage | Nostalgic | #f5f5f5 |
+| shine | Bright, vivid | #f5f5f5 |
+| roma | Professional | #f5f5f5 |
+
+## Few-Shot Examples
+
+### 1. CSV → Bar Chart
+
+User: *"Chart these monthly sales"*
+
+```csv
+Month,Sales
+Jan,1200
+Feb,900
+Mar,1600
+```
+
+→ CLI auto-detects CSV, generates bar chart with labels, tooltips, rounded corners.
+
+### 2. JSON → Pie with Percentages
+
+```json
+{
+  "series": [{
+    "type": "pie",
+    "radius": ["40%", "70%"],
+    "data": [
+      {"value": 48, "name": "Chrome"},
+      {"value": 22, "name": "Firefox"},
+      {"value": 18, "name": "Safari"}
+    ],
+    "label": {"formatter": "{b}\n{d}%"}
+  }],
+  "title": {"text": "Market Share"}
+}
+```
+
+### 3. CSV → Multi-series Line
+
+```csv
+Date,Revenue,Cost
+Jan,1200,800
+Feb,1500,900
+Mar,1800,1100
+```
+
+`node cli.js data.csv --type line --theme dark --open`
+
+## Architecture
+
+```
+Input (JSON/CSV)
+  → cli.js parses & converts to ECharts option
+  → Option JSON injected into HTML template
+  → echarts.init(dom, theme, {renderer:"svg"})
+  → Output: self-contained .html with CDN references (~800 bytes)
+  → --embed flag: inline ECharts lib (~1MB, offline)
+```
+
+## Dependencies
+
+- **CLI**: Node.js only (stdlib, no npm packages)
+- **Runtime**: Internet for ECharts CDN (or `--embed` for offline)
+- **Zero npm install required**
+
+## References
+
+| File | Content |
+|------|---------|
+| `prompt.md` | Prompt engineering guide: core pattern, chain-of-thought, 3 few-shot examples, 16 option references, end-user template |
+| `references/echarts-option-reference.md` | Full ECharts option API (EN, from official site) |
+| `references/echarts-option-zh.md` | Full ECharts option API (中文) |
+| `references/echarts-wordcloud.md` | Wordcloud extension docs |
+| `references/echarts-zh-title.md` | title 选项详细说明 |
+| `references/echarts-zh-grid.md` | grid 选项详细说明 |
+| `references/echarts-zh-xAxis.md` | xAxis 选项详细说明 |
+| `references/echarts-zh-yAxis.md` | yAxis 选项详细说明 |
+| `references/echarts-zh-series-bar.md` | series.bar 柱状图配置 |
+| `references/echarts-zh-series-line.md` | series.line 折线图配置 |
+| `references/echarts-zh-series-pie.md` | series.pie 饼图配置 |
+| `references/echarts-zh-series-scatter.md` | series.scatter 散点图 |
+| `references/echarts-zh-series-radar.md` | series.radar 雷达图 |
+| `references/echarts-zh-tooltip.md` | tooltip 提示框配置 |
+| `references/echarts-zh-legend.md` | legend 图例配置 |
+| `references/echarts-zh-color.md` | color 调色盘 |
+| `references/echarts-zh-label.md` | label 数据标签 |
+| `references/echarts-zh-emphasis.md` | emphasis 高亮状态 |
+| `references/echarts-zh-smooth.md` | smooth 平滑曲线 |
+| `references/echarts-zh-axisLabel.md` | axisLabel 坐标轴标签 |
+
+## Prompt Guide
+
+For LLM-based chart generation, see `prompt.md` — a complete prompt engineering guide with:
+- Core prompt pattern for ECharts option generation
+- Chain-of-thought reasoning for chart type selection
+- 3 Few-Shot examples (bar, pie, line)
+- 16 detailed option references with JSON examples
+- Common mistakes checklist
+- Copyable end-user prompt template
+
+## Interactive Web App
+
+For a full GUI experience, open `web/text2echarts.html` in your browser.
+Features: live preview, templates, theme switching, export PNG/JPG/SVG.
+
+```
+web/
+├── text2echarts.html    # English (default, lang toggle)
+├── app.js               # Core logic (i18n via JSON)
+├── styles.css           # Shared styles
+├── templates.js         # Chart templates (CN/EN)
+└── lang/                # JSON language packs
+```
+
+## Key ECharts Options Reference
+
+Refer to these when constructing chart configurations. Official docs:
+
+| Option | What it does | Concrete example | Link |
+|--------|-------------|-----------------|------|
+| `title` | Chart title | `{"text":"Sales","left":"center","textStyle":{"fontSize":18}}` | [→ docs](https://echarts.apache.org/en/option.html#title) |
+| `grid` | Chart margins | `{"left":"3%","right":"4%","bottom":"10%","containLabel":true}` — `containLabel` prevents axis labels from being clipped | [→ docs](https://echarts.apache.org/en/option.html#grid) |
+| `xAxis` | X axis | `{"type":"category","data":["Jan","Feb"],"axisLabel":{"rotate":45}}` — `type` must be `category` or `value` | [→ docs](https://echarts.apache.org/en/option.html#xAxis) |
+| `yAxis` | Y axis | `{"type":"value","name":"Units"}` — add `name` for axis label text | [→ docs](https://echarts.apache.org/en/option.html#yAxis) |
+| `series.type:'bar'` | Bar chart | `{"type":"bar","data":[30,80],"itemStyle":{"borderRadius":[4,4,0,0]},"label":{"show":true,"position":"top"}}` | [→ docs](https://echarts.apache.org/en/option.html#series-bar) |
+| `series.type:'line'` | Line chart | `{"type":"line","data":[22,25,23],"smooth":true,"areaStyle":{"opacity":0.1},"lineStyle":{"width":3,"shadowBlur":10}}` | [→ docs](https://echarts.apache.org/en/option.html#series-line) |
+| `series.type:'pie'` | Pie/donut | `{"type":"pie","radius":["40%","70%"],"data":[{"value":48,"name":"A"}],"label":{"formatter":"{b}\
+{d}%"},"emphasis":{"label":{"fontSize":16}}}` | [→ docs](https://echarts.apache.org/en/option.html#series-pie) |
+| `series.type:'scatter'` | Scatter | `{"type":"scatter","data":[[160,55],[170,65]],"symbolSize":12}` | [→ docs](https://echarts.apache.org/en/option.html#series-scatter) |
+| `series.type:'radar'` | Radar | `{"type":"radar","data":[{"value":[90,75],"name":"Score"}]}` + `radar.indicator` | [→ docs](https://echarts.apache.org/en/option.html#series-radar) |
+| `tooltip` | Hover info | `{"trigger":"axis"}` for bar/line (axis-level), `{"trigger":"item","formatter":"{b}:{c}"}` for pie | [→ docs](https://echarts.apache.org/en/option.html#tooltip) |
+| `legend` | Series names | `{"data":["Sales","Profit"],"bottom":"0"}` — `data` must match series `name` | [→ docs](https://echarts.apache.org/en/option.html#legend) |
+| `color` | Color palette | `["#5470c6","#91cc75","#fac858","#ee6666","#73c0de"]` — ECharts default 5-color palette | [→ docs](https://echarts.apache.org/en/option.html#color) |
+| `label` | Data labels | `{"show":true,"position":"top","formatter":"{c}","fontSize":14}` — `position`: top/inside/outside/bottom | [→ docs](https://echarts.apache.org/en/option.html#series-bar.label) |
+| `emphasis` | Highlight state | `{"label":{"fontSize":16,"fontWeight":"bold"}}` — triggered on hover | [→ docs](https://echarts.apache.org/en/option.html#series-pie.emphasis) |
+| `smooth` | Curve lines | `true` for curved line chart, `false` (default) for polyline | [→ docs](https://echarts.apache.org/en/option.html#series-line.smooth) |
+| `itemStyle.borderRadius` | Rounded bars | `[4,4,0,0]` — top-left, top-right, bottom-right, bottom-left | [→ docs](https://echarts.apache.org/en/option.html#series-bar.itemStyle) |
+| `axisLabel.rotate` | Rotate X labels | `45` degrees — useful when labels overlap (10+ categories) | [→ docs](https://echarts.apache.org/en/option.html#xAxis.axisLabel) |
+
+See also: `references/echarts-option-reference.md` (EN) and `references/echarts-option-zh.md` (CN)
+
+## Common Issues
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| Blank chart | CDN blocked or no internet | Use `--embed` flag for local libs |
+| SVG not rendering | Old browser version | Chrome/Firefox 2020+ required |
+| Wordcloud missing | Missing wordcloud extension | Included in `--embed` mode; CDN auto-loads |
+| Chinese garbled | File saved in wrong encoding | Save as UTF-8; `--embed` embeds correct charset |
+| CLI not found | Node.js not installed | Install from nodejs.org |
+
+## Verification
+
+After generating a chart:
+
+1. Open the .html file in a browser
+2. Confirm chart canvas/SVG renders
+3. Hover over data points — tooltip should appear
+4. Resize browser — chart should adapt
+5. Test with `--theme` to confirm theme switching
