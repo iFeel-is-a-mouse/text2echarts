@@ -83,7 +83,7 @@ function applyTemplate(template) {
                                 "name": "苹果",
                                 "type": "bar",
                                 "itemStyle": {
-                                    "color": "function (params) {colors = myChart.getOption().color; return colors[params.dataIndex % colors.length]}"
+                                    "color": "#5470c6"
                                 },
                                 "data": [
                                     120,
@@ -102,7 +102,7 @@ function applyTemplate(template) {
                                 "label": {
                                     "show": true,
                                     "position": "top",
-                                    "formatter": "(p) => {return `${(p.value * 100 / publicVar.sum).toFixed(2)}%`;}"
+                                    "formatter": "{c}"
                                 }
                             },
                             {
@@ -125,12 +125,12 @@ function applyTemplate(template) {
                                 "label": {
                                     "show": true,
                                     "position": "top",
-                                    "formatter": "() => {return option.series[1].name;}"
+                                    "formatter": "{c}"
                                 }
                             }
                         ]
                     };
-                    functionString = "sum1 = option.series[1].data.reduce((totle,num)=> totle+num);publicVar = {sum: sum1};return publicVar.sum;";
+                    functionString = '{"sum": 1000}';
 
                     break;
 
@@ -262,7 +262,7 @@ function applyTemplate(template) {
 						  "series": [
 							{
 							  "type": "wordCloud",
-							  "shape": "function (theta) {const a = 16;const b = 9;const R = Math.sqrt(a * a + b * b);const normA = a / R;const normB = b / R;const factor = Math.max(Math.abs(Math.cos(theta)) / normA,Math.abs(Math.sin(theta)) / normB);return 1 / factor;}",
+							  "shape": "diamond",
 							  "gridSize": 8,
 							  "sizeRange": [
 								12,
@@ -508,7 +508,7 @@ function applyTemplate(template) {
 							  "textStyle": {
 								"fontFamily": "sans-serif",
 								"fontWeight": "bold",
-								"color": "function (params) {colors = myChart.getOption().color; return colors[params.dataIndex % colors.length]}"
+								"color": "#5470c6"
 							  },
 							  "emphasis": {
 								"focus": "self",

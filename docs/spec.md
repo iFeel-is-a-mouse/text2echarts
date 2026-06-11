@@ -67,3 +67,19 @@
 
 - 移除 Variable Assignment 可能影响极少数使用自定义计算逻辑的用户
 - 缓解：该功能本身即安全隐患，且ECharts纯JSON配置已覆盖绝大多数场景
+
+---
+
+## 需求变更记录
+
+### 变更 #1 — 2026-06-11 13:05
+**变更人：** iFeel
+**变更摘要：** 恢复 Variable Assignment 功能，但改为安全实现（纯JSON + 模板替换）
+**变更内容：**
+- 原需求：完全移除 Variable Assignment（因使用 `new Function()` 不安全）
+- 新需求：恢复 Variable Assignment 输入框，但改为纯JSON格式输入，通过 `JSON.parse` 解析为 `publicVar`；在 Chart Options 中支持 `${publicVar.x}` 模板替换；支持简单算术表达式如 `${publicVar.x * 2 + publicVar.y}`，通过手写安全解析器（无 `eval`/`Function`）求值
+**影响范围：**
+- 代码：static/app.js（恢复 functionInput 处理逻辑）、text2echarts.html（恢复UI区域）
+- 测试：新增模板替换测试、安全解析器测试
+- 文档：README 更新说明
+**关联：** 安全审计变更 — 在保持安全的前提下恢复功能
