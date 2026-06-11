@@ -113,6 +113,7 @@
 
         // DOM elements
         const optionInput = document.getElementById('optionInput');
+        const functionInput = document.getElementById('functionInput');
         const generateBtn = document.getElementById('generateBtn');
         const clearBtn = document.getElementById('clearBtn');
         const transparentBg = document.getElementById('transparentBg');
@@ -204,9 +205,22 @@
                     return 0
                 }
 
-                // Variable Assignment removed (security: no dynamic code execution)
-                // functionInput content is ignored — use pure JSON config only
+                // Variable Assignment: pure JSON parse (security: no dynamic code execution)
+                const functionText = functionInput.value.trim();
+                if (functionText) {
+                    try {
+                        window.publicVar = JSON.parse(functionText);
+                        updateStatus('valid', LANG.action_funcOk + JSON.stringify(window.publicVar).substring(0, 80));
+                    } catch (e) {
+                        updateStatus('error', LANG.err_func_detail + e.message);
+                        throw e;
+                    }
+                } else {
+                    window.publicVar = {};
+                }
 
+                // Template replacement: replace ${publicVar.x} or ${expr} in all string values
+                window.option = resolveTemplates(window.option, window.publicVar);
 
                 // Set chart container size
                 var chartDom = document.getElementById('chart');
@@ -397,6 +411,252 @@
                 showError(errorMessage);
             }
         });
+
+        // ============================================================
+        // Template resolution: replace ${...} patterns in all string values
+        // ============================================================
+        function resolveTemplates(obj, vars) {
+            if (typeof obj === 'string') {
+                return obj.replace(/\$\{([^}]+)\}/g, function(match, expr) {
+                    try {
+                        var val = safeEval(expr.trim(), vars);
+                        // If result is a number or boolean, convert to string; otherwise keep as-is
+                        if (typeof val === 'number' || typeof val === 'boolean') {
+                            return String(val);
+                        }
+                        return val;
+                    } catch (e) {
+                        // If expression fails, keep original placeholder
+                        return match;
+                    }
+                });
+            } else if (Array.isArray(obj)) {
+                var result = [];
+                for (var i = 0; i < obj.length; i++) {
+                    result[i] = resolveTemplates(obj[i], vars);
+                }
+                return result;
+            } else if (obj !== null && typeof obj === 'object') {
+                var result = {};
+                for (var key in obj) {
+                    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                        result[key] = resolveTemplates(obj[key], vars);
+                    }
+                }
+                return result;
+            }
+            // Primitives (number, boolean, null, undefined) — return as-is
+            return obj;
+        }
+
+        // ============================================================
+        // Safe expression parser (no eval / new Function / Function)
+        // Supports: +, -, *, /, %, parentheses, numbers, variable refs, array indices
+        // ============================================================
+        function safeEval(expr, vars) {
+            // Whitelist: only allow safe characters
+            if (!/^[\w\s+\-*/%().[\]]+$/.test(expr)) {
+                throw new Error('Invalid characters in expression: ' + expr);
+            }
+            // Reject function call patterns: word + (
+            if (/\w\s*\(/.test(expr)) {
+                throw new Error('Function calls not allowed: ' + expr);
+            }
+            var tokens = tokenize(expr);
+            var result = parseExpression(tokens, 0, vars);
+            return result.value;
+        }
+
+        function tokenize(expr) {
+            var tokens = [];
+            var i = 0;
+            var len = expr.length;
+            while (i < len) {
+                var ch = expr[i];
+                // Skip whitespace
+                if (/\s/.test(ch)) {
+                    i++;
+                    continue;
+                }
+                // Number: integer or decimal
+                if (/[0-9]/.test(ch) || (ch === '.' && i + 1 < len && /[0-9]/.test(expr[i + 1]))) {
+                    var num = '';
+                    while (i < len && /[0-9.]/.test(expr[i])) {
+                        num += expr[i];
+                        i++;
+                    }
+                    tokens.push({ type: 'NUMBER', value: parseFloat(num) });
+                    continue;
+                }
+                // Identifier: letter or underscore followed by word chars
+                if (/[a-zA-Z_]/.test(ch)) {
+                    var ident = '';
+                    while (i < len && /[\w]/.test(expr[i])) {
+                        ident += expr[i];
+                        i++;
+                    }
+                    tokens.push({ type: 'IDENTIFIER', value: ident });
+                    continue;
+                }
+                // Operators and punctuation
+                if (ch === '+' || ch === '-' || ch === '*' || ch === '/' || ch === '%') {
+                    tokens.push({ type: 'OPERATOR', value: ch });
+                    i++;
+                    continue;
+                }
+                if (ch === '(') { tokens.push({ type: 'LPAREN', value: ch }); i++; continue; }
+                if (ch === ')') { tokens.push({ type: 'RPAREN', value: ch }); i++; continue; }
+                if (ch === '[') { tokens.push({ type: 'LBRACKET', value: ch }); i++; continue; }
+                if (ch === ']') { tokens.push({ type: 'RBRACKET', value: ch }); i++; continue; }
+                if (ch === '.') { tokens.push({ type: 'DOT', value: ch }); i++; continue; }
+                // Unknown character
+                throw new Error('Unexpected character: ' + ch + ' at position ' + i);
+            }
+            return tokens;
+        }
+
+        // Recursive descent parser entry: expression = term (('+' | '-') term)*
+        function parseExpression(tokens, pos, vars) {
+            var result = parseTerm(tokens, pos, vars);
+            pos = result.pos;
+            var value = result.value;
+            while (pos < tokens.length) {
+                var tok = tokens[pos];
+                if (tok.type === 'OPERATOR' && (tok.value === '+' || tok.value === '-')) {
+                    pos++;
+                    var right = parseTerm(tokens, pos, vars);
+                    pos = right.pos;
+                    if (tok.value === '+') {
+                        value = value + right.value;
+                    } else {
+                        value = value - right.value;
+                    }
+                } else {
+                    break;
+                }
+            }
+            return { value: value, pos: pos };
+        }
+
+        // term = factor (('*' | '/' | '%') factor)*
+        function parseTerm(tokens, pos, vars) {
+            var result = parseFactor(tokens, pos, vars);
+            pos = result.pos;
+            var value = result.value;
+            while (pos < tokens.length) {
+                var tok = tokens[pos];
+                if (tok.type === 'OPERATOR' && (tok.value === '*' || tok.value === '/' || tok.value === '%')) {
+                    pos++;
+                    var right = parseFactor(tokens, pos, vars);
+                    pos = right.pos;
+                    if (tok.value === '*') {
+                        value = value * right.value;
+                    } else if (tok.value === '/') {
+                        value = value / right.value;
+                    } else {
+                        value = value % right.value;
+                    }
+                } else {
+                    break;
+                }
+            }
+            return { value: value, pos: pos };
+        }
+
+        // factor = unary? primary
+        function parseFactor(tokens, pos, vars) {
+            if (pos >= tokens.length) {
+                throw new Error('Unexpected end of expression');
+            }
+            var tok = tokens[pos];
+            // Unary minus
+            if (tok.type === 'OPERATOR' && tok.value === '-') {
+                pos++;
+                var result = parseFactor(tokens, pos, vars);
+                return { value: -result.value, pos: result.pos };
+            }
+            // Unary plus (no-op)
+            if (tok.type === 'OPERATOR' && tok.value === '+') {
+                pos++;
+                return parseFactor(tokens, pos, vars);
+            }
+            return parsePrimary(tokens, pos, vars);
+        }
+
+        // primary = NUMBER | '(' expression ')' | IDENTIFIER postfix*
+        function parsePrimary(tokens, pos, vars) {
+            if (pos >= tokens.length) {
+                throw new Error('Unexpected end of expression');
+            }
+            var tok = tokens[pos];
+            if (tok.type === 'NUMBER') {
+                return { value: tok.value, pos: pos + 1 };
+            }
+            if (tok.type === 'LPAREN') {
+                pos++;
+                var result = parseExpression(tokens, pos, vars);
+                if (result.pos >= tokens.length || tokens[result.pos].type !== 'RPAREN') {
+                    throw new Error('Missing closing parenthesis');
+                }
+                return { value: result.value, pos: result.pos + 1 };
+            }
+            if (tok.type === 'IDENTIFIER') {
+                return parseIdentifierAccess(tokens, pos, vars);
+            }
+            throw new Error('Unexpected token: ' + JSON.stringify(tok));
+        }
+
+        // identifier postfix*  —  handles publicVar.x, x[0], etc.
+        function parseIdentifierAccess(tokens, pos, vars) {
+            var tok = tokens[pos];
+            var rootName = tok.value;
+            pos++;
+            // Resolve the root variable
+            var value;
+            if (rootName === 'publicVar') {
+                value = vars;
+            } else if (vars.hasOwnProperty && vars.hasOwnProperty(rootName)) {
+                value = vars[rootName];
+            } else if (typeof vars[rootName] !== 'undefined') {
+                value = vars[rootName];
+            } else {
+                throw new Error('Undefined variable: ' + rootName);
+            }
+            // Handle postfix: .prop, [index]
+            while (pos < tokens.length) {
+                var next = tokens[pos];
+                if (next.type === 'DOT') {
+                    pos++;
+                    if (pos >= tokens.length || tokens[pos].type !== 'IDENTIFIER') {
+                        throw new Error('Expected property name after dot');
+                    }
+                    var propName = tokens[pos].value;
+                    pos++;
+                    if (value === null || value === undefined) {
+                        throw new Error('Cannot access property ' + propName + ' of null/undefined');
+                    }
+                    value = value[propName];
+                } else if (next.type === 'LBRACKET') {
+                    pos++;
+                    var idxResult = parseExpression(tokens, pos, vars);
+                    pos = idxResult.pos;
+                    if (pos >= tokens.length || tokens[pos].type !== 'RBRACKET') {
+                        throw new Error('Missing closing bracket ]');
+                    }
+                    pos++;
+                    if (value === null || value === undefined) {
+                        throw new Error('Cannot index null/undefined');
+                    }
+                    value = value[idxResult.value];
+                } else {
+                    break;
+                }
+            }
+            if (typeof value !== 'number') {
+                throw new Error('Variable ' + rootName + ' is not a number: ' + JSON.stringify(value));
+            }
+            return { value: value, pos: pos };
+        }
 
         // transformObject: pure deep copy — no function conversion (security: no dynamic code execution)
         function transformObject(obj) {
