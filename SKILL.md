@@ -9,7 +9,7 @@ description: >
   - Screenshot (截图): use CLI with --screenshot output.
   - Fine-tuning (微调/修改): open browser for interactive adjustment.
   Supports 6 chart types: bar, line, pie, scatter, radar, wordcloud.
-  Trigger words: chart, graph, visualize, plot, draw, wordcloud, vent draw图表, 画图, 可视化, 图片, 矢量图, html, web, 源码, 页面, 词云.
+  Trigger words: chart, graph, visualize, plot, draw, wordcloud, vent draw图表, 画图, 可视化, 图片, 矢量图, 词云.
 metadata:
   version: "2.0.3"
   launch: "text2echarts.html"
@@ -27,10 +27,6 @@ metadata:
     - 饼图
     - 图片
     - 矢量图
-    - html
-    - web
-    - 源码
-    - 页面
     - wordcloud
     - vent draw
     - 词云
@@ -56,11 +52,6 @@ case when: user asks for an image / picture / vector graphic (图片/矢量图):
   - `--svg` enables SVG renderer, `--embed` bundles ECharts lib for offline, `--svg-output` extracts standalone .svg file
   - SVG is vector format — sharp at any resolution, ideal for documents
   - Also send PNG screenshot for instant preview
-
-case when: user asks for html / web / source / page (html/web/源码/页面):
-  - Generate HTML with CLI: `node cli.js data.json --svg -o chart.html`
-  - Read the generated HTML file and output as code block: ` ```html ... ``` `
-  - User can copy-paste and save as .html to open in browser
 
 case when: user asks for a screenshot / snapshot (截图):
   - Use CLI with screenshot output: `node cli.js data.json --screenshot chart.png`

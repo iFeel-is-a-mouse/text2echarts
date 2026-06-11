@@ -206,9 +206,7 @@ async function main() {
   }
 
   if (doOpen) {
-    const cmd = os.platform() === 'darwin' ? 'open' : os.platform() === 'win32' ? 'start' : 'xdg-open';
-    require('child_process').execSync(`${cmd} "${path.resolve(file)}"`);
-    console.log('   Browser opened');
+    console.log('   Open manually: ' + path.resolve(file));
   }
 }
 

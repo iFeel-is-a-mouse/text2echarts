@@ -113,7 +113,6 @@
 
         // DOM elements
         const optionInput = document.getElementById('optionInput');
-        const functionInput = document.getElementById('functionInput');
         const generateBtn = document.getElementById('generateBtn');
         const clearBtn = document.getElementById('clearBtn');
         const transparentBg = document.getElementById('transparentBg');
@@ -205,16 +204,8 @@
                     return 0
                 }
 
-                // Init public variable
-                const functionText = functionInput.value.trim();
-                try {
-                    const calPublicVar = new Function(functionText);
-                    calPublicVar();
-                } catch (e) {
-                    updateStatus('error', LANG.err_func);
-                    console.log(LANG.err_func_detail + e.message + "\n" + functionText)
-                    throw e;
-                }
+                // Variable Assignment removed (security: no dynamic code execution)
+                // functionInput content is ignored — use pure JSON config only
 
 
                 // Set chart container size
@@ -407,61 +398,24 @@
             }
         });
 
-        functionInput.addEventListener('blur', function() {
-            try {
-
-                const functionText = functionInput.value.trim();
-                if (functionText) {
-                    const calPublicVar = new Function(functionText);
-                    const result = calPublicVar();
-                    updateStatus('valid', LANG.action_func_ok + result);
-                }
-            } catch (error) {
-                updateStatus('error', LANG.action_func_err + error.message);
-                showError(LANG.err_detail + (error.stack || ''));
-            }
-        });
-
-
+        // transformObject: pure deep copy — no function conversion (security: no dynamic code execution)
         function transformObject(obj) {
             if (Array.isArray(obj)) {
-                for (let i = 0; i < obj.length; i++) {
-                    var item = obj[i];
-                    // FIX #9: Skip recursion for primitives (number, boolean, null)
-                    if (typeof item === 'string' || (item !== null && typeof item === 'object')) {
-                        obj[i] = transformObject(item);
-                    }
+                var result = [];
+                for (var i = 0; i < obj.length; i++) {
+                    result[i] = transformObject(obj[i]);
                 }
+                return result;
             } else if (obj !== null && typeof obj === 'object') {
-                for (const key in obj) {
+                var result = {};
+                for (var key in obj) {
                     if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                        var val = obj[key];
-                        // FIX #9: Skip recursion for primitives
-                        if (typeof val === 'string' || (val !== null && typeof val === 'object')) {
-                            obj[key] = transformObject(val);
-                        }
+                        result[key] = transformObject(obj[key]);
                     }
                 }
-            } else if (typeof obj === 'string') {
-                const trimmed = obj.trim();
-                const isFunction = (
-                    trimmed.startsWith('function') ||
-                    (trimmed.includes('=>') && (
-                        trimmed.startsWith('(') ||
-                        /^\w+\s*=>/.test(trimmed)
-                    ))
-                );
-
-                if (isFunction) {
-                    try {
-                        return new Function(`return (${obj})`)();
-                    } catch (error) {
-                        console.warn(LANG.action_func_parse_fail + obj, error);
-                        return obj;
-                    }
-                }
-                return obj;
+                return result;
             }
+            // Primitives (string, number, boolean, null, undefined) — return as-is
             return obj;
         }
         

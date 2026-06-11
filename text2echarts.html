@@ -158,14 +158,6 @@
   "series": [{ "name": "Sales", "type": "bar" }]
 }'></textarea>
 
-                    <h2 class="section-title">
-                        Variable Assignment
-                    </h2>
-
-                    <textarea id="functionInput" placeholder='[Optional]
-Initialize publicVar={} for pre-computation (e.g., calculating percentages). Note: prefer single quotes for strings.
-'></textarea>
-
                     <div class="section-spacer"></div>
 
                     <div class="controls">
@@ -241,11 +233,10 @@ Initialize publicVar={} for pre-computation (e.g., calculating percentages). Not
                 </h2>
                 <div style="background: rgba(10, 20, 40, 0.5); padding: 15px; border-radius: 8px;">
                     <p>1. Set <b>size</b> and <b>theme</b> in Basic Config;</p>
-                    <p>2. Enter chart <b>options</b> data; reference publicVar, option, myChart (see Bar Chart template);</p>
-                    <p>3. In <b>Variable Assignment</b>, initialize publicVar={} for pre-computation (see Bar Chart template);</p>
-                    <p>4. Click <b>Generate Chart</b> to preview;</p>
-                    <p>5. Use <b>Export Options</b> to save chart or config;</p>
-                    <p>6. Use <b>Chart Templates</b> for ready-to-run examples (demo purpose, logic accuracy not guaranteed);</p>
+                    <p>2. Enter chart <b>options</b> as pure JSON config (no code execution, no function strings);</p>
+                    <p>3. Click <b>Generate Chart</b> to preview;</p>
+                    <p>4. Use <b>Export Options</b> to save chart or config;</p>
+                    <p>5. Use <b>Chart Templates</b> for ready-to-run examples (demo purpose, logic accuracy not guaranteed);</p>
                     <br />
                     <p>Tip:<br />Refer to examples to generate valid JSON.，The string is parsed from textarea by JSON.parse and passed to ECharts option. Two strict rules:
                         1. No // comments or non-JSON syntax. Functions must be strings wrapped in double quotes.
