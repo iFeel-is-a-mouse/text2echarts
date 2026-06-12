@@ -5,13 +5,13 @@ provider: openclaw
 description: >
   Chart generator skill. When triggered:
   - Default: CONSTRUCT ECharts option JSON and output HTML string directly and render by mermaid and support preview.
-  - Image / vector (图片/矢量图): use CLI with --svg --embed output.
-  - Screenshot (截图): use CLI with --screenshot output.
+  - Image / vector (图片/矢量图): use CLI with --svg-output (or --svg --embed for offline).
+  - Screenshot (截图): use CLI with --screenshot (needs Playwright).
   - Fine-tuning (微调/修改): open browser for interactive adjustment.
-  Supports 6 chart types: bar, line, pie, scatter, radar, wordcloud.
+  Supports 6 chart types: bar, line, pie, scatter, radar, wordcloud (via JSON).
   Trigger words: chart, graph, visualize, plot, draw, wordcloud, vent draw图表, 画图, 可视化, 图片, 矢量图, 词云.
 metadata:
-  version: "2.0.3"
+  version: "2.0.6"
   launch: "text2echarts.html"
   trigger-keywords:
     - chart
@@ -48,21 +48,24 @@ case when: user asks for a chart / graph / visualization (default):
   - Support preview by opening in browser or screenshot
 
 case when: user asks for an image / picture / vector graphic (图片/矢量图):
-  - Use CLI with SVG + embed: `node cli.js data.json --svg --embed --svg-output -o chart.svg`
-  - `--svg` enables SVG renderer, `--embed` bundles ECharts lib for offline, `--svg-output` extracts standalone .svg file
+  - Use CLI with SVG output: `node cli.js data.json --svg-output -o chart.svg`
+  - `--svg-output` extracts standalone .svg file (requires Playwright)
+  - Add `--embed` to bundle ECharts lib for fully offline use
   - SVG is vector format — sharp at any resolution, ideal for documents
   - Also send PNG screenshot for instant preview
 
 case when: user asks for a screenshot / snapshot (截图):
-  - Use CLI with screenshot output: `node cli.js data.json --screenshot chart.png`
+  - Use CLI with screenshot: `node cli.js data.json --screenshot -o chart.png`
   - This generates high-quality raster PNG via Playwright
+  - If Playwright is not installed, falls back with clear error + install instructions
 
 case when: user wants to fine-tune / adjust / modify the chart (微调/修改):
   - Open browser: `node cli.js data.json --open`
   - Or open the generated HTML directly for interactive editing
 
 case when: user asks to save to file / run locally:
-  - Use CLI: `node cli.js data.json -o chart.html`
+  - Use CLI: `node cli.js data.json -o chart.html` (CDN mode, ~1KB)
+  - For offline use: add `--embed` (~1MB)
   - Can combine with --open or --screenshot
 
 case when: user asks for word cloud (词云):
@@ -132,11 +135,14 @@ node cli.js <input> [options]
 
 Options:
   -o, --out <file>   Output file name
-  --type <type>      Chart type for CSV: bar|line|pie|radar
+  --type <type>      Chart type for CSV: bar|line|pie|radar|wordcloud
   --theme <name>     dark|infographic|macarons|roma|shine|vintage
   --width / --height Chart dimensions
   --svg              SVG renderer (default)
+  --svg-output       Output standalone .svg file (needs Playwright)
+  --screenshot       Output PNG screenshot (needs Playwright)
   --open             Open in browser after generation
+  --cdn              Use CDN for ECharts lib (default)
   --embed            Embed ECharts lib for offline (~1MB)
   --slide            960x540 PPT slide mode
 ```
@@ -214,8 +220,10 @@ Input (JSON/CSV)
   → cli.js parses & converts to ECharts option
   → Option JSON injected into HTML template
   → echarts.init(dom, theme, {renderer:"svg"})
-  → Output: self-contained .html with CDN references (~800 bytes)
+  → Output: self-contained .html with CDN references (~1KB)
   → --embed flag: inline ECharts lib (~1MB, offline)
+  → --screenshot flag: PNG via Playwright
+  → --svg-output flag: standalone SVG via Playwright
 ```
 
 ## Dependencies
@@ -304,11 +312,12 @@ See also: `references/echarts-option-reference.md` (EN) and `references/echarts-
 
 | Problem | Cause | Fix |
 |---------|-------|-----|
-| Blank chart | CDN blocked or no internet | Use `--embed` flag for local libs |
+| Blank chart | CDN blocked or no internet | Use `--embed` flag for local libs (~1MB) |
 | SVG not rendering | Old browser version | Chrome/Firefox 2020+ required |
 | Wordcloud missing | Missing wordcloud extension | Included in `--embed` mode; CDN auto-loads |
 | Chinese garbled | File saved in wrong encoding | Save as UTF-8; `--embed` embeds correct charset |
 | CLI not found | Node.js not installed | Install from nodejs.org |
+| Screenshot fails | Playwright not installed | `npm install playwright && npx playwright install chromium`, or use `--svg-output` for vector format |
 
 ## Verification
 
