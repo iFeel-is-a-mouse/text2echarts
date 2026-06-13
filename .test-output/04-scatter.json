@@ -1,0 +1,62 @@
+{
+  "options": {
+    "theme": "dark",
+    "width": 800,
+    "height": 500,
+    "bgColor": "#1a1a2e",
+    "slideMode": false
+  },
+  "title": {
+    "text": "身高体重分布",
+    "left": "center"
+  },
+  "tooltip": {},
+  "xAxis": {
+    "type": "value",
+    "name": "身高(cm)"
+  },
+  "yAxis": {
+    "type": "value",
+    "name": "体重(kg)"
+  },
+  "series": [
+    {
+      "type": "scatter",
+      "data": [
+        [
+          160,
+          55
+        ],
+        [
+          165,
+          60
+        ],
+        [
+          170,
+          65
+        ],
+        [
+          175,
+          70
+        ],
+        [
+          180,
+          75
+        ],
+        [
+          185,
+          80
+        ],
+        [
+          170,
+          58
+        ],
+        [
+          175,
+          72
+        ]
+      ],
+      "symbolSize": 12
+    }
+  ]
+}

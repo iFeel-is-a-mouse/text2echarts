@@ -1,0 +1,55 @@
+{
+  "options": {
+    "theme": "macarons",
+    "width": 800,
+    "height": 500,
+    "bgColor": "#f5f5f5",
+    "slideMode": false
+  },
+  "title": {
+    "text": "能力评估",
+    "left": "center"
+  },
+  "tooltip": {},
+  "radar": {
+    "indicator": [
+      {
+        "name": "技术能力",
+        "max": 110
+      },
+      {
+        "name": "沟通协调",
+        "max": 110
+      },
+      {
+        "name": "项目管理",
+        "max": 110
+      },
+      {
+        "name": "创新能力",
+        "max": 110
+      },
+      {
+        "name": "团队协作",
+        "max": 110
+      }
+    ]
+  },
+  "series": [
+    {
+      "type": "radar",
+      "data": [
+        {
+          "value": [
+            90,
+            75,
+            60,
+            85,
+            80
+          ],
+          "name": "能力"
+        }
+      ]
+    }
+  ]
+}

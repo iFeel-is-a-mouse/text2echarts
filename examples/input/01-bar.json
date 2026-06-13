@@ -1,0 +1,46 @@
+{
+  "options": {
+    "theme": "infographic",
+    "width": 800,
+    "height": 500,
+    "bgColor": "#f5f5f5",
+    "slideMode": false
+  },
+  "title": {
+    "text": "月度销售额",
+    "left": "center"
+  },
+  "tooltip": {
+    "trigger": "axis"
+  },
+  "legend": {
+    "data": ["销售额"],
+    "bottom": "0"
+  },
+  "grid": {
+    "left": "3%",
+    "right": "4%",
+    "bottom": "15%",
+    "containLabel": true
+  },
+  "xAxis": {
+    "type": "category",
+    "data": ["一月", "二月", "三月", "四月", "五月", "六月"]
+  },
+  "yAxis": {
+    "type": "value",
+    "name": "万元"
+  },
+  "series": [{
+    "name": "销售额",
+    "type": "bar",
+    "data": [1200, 900, 1600, 1100, 1400, 1800],
+    "itemStyle": {
+      "borderRadius": [4, 4, 0, 0]
+    },
+    "label": {
+      "show": true,
+      "position": "top"
+    }
+  }]
+}

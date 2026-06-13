@@ -1,0 +1,78 @@
+{
+  "options": {
+    "theme": "vintage",
+    "width": 800,
+    "height": 500,
+    "bgColor": "#f5f5f5",
+    "slideMode": false
+  },
+  "title": {
+    "text": "技术热词",
+    "left": "center"
+  },
+  "tooltip": {},
+  "series": [
+    {
+      "type": "wordCloud",
+      "data": [
+        {
+          "name": "人工智能",
+          "value": 100
+        },
+        {
+          "name": "大模型",
+          "value": 85
+        },
+        {
+          "name": "机器学习",
+          "value": 70
+        },
+        {
+          "name": "深度学习",
+          "value": 60
+        },
+        {
+          "name": "数据挖掘",
+          "value": 50
+        },
+        {
+          "name": "自然语言",
+          "value": 45
+        },
+        {
+          "name": "计算机视觉",
+          "value": 40
+        },
+        {
+          "name": "强化学习",
+          "value": 35
+        },
+        {
+          "name": "知识图谱",
+          "value": 30
+        },
+        {
+          "name": "AIGC",
+          "value": 28
+        },
+        {
+          "name": "推荐系统",
+          "value": 25
+        },
+        {
+          "name": "边缘计算",
+          "value": 22
+        }
+      ],
+      "sizeRange": [
+        14,
+        60
+      ],
+      "rotationRange": [
+        -45,
+        45
+      ],
+      "shape": "diamond"
+    }
+  ]
+}

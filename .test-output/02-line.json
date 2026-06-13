@@ -1,0 +1,63 @@
+{
+  "options": {
+    "theme": "dark",
+    "width": 800,
+    "height": 500,
+    "bgColor": "#1a1a2e",
+    "slideMode": false
+  },
+  "title": {
+    "text": "一周温度变化",
+    "left": "center"
+  },
+  "tooltip": {
+    "trigger": "axis"
+  },
+  "legend": {
+    "data": [
+      "数据"
+    ],
+    "bottom": "0"
+  },
+  "grid": {
+    "left": "3%",
+    "right": "4%",
+    "bottom": "15%",
+    "containLabel": true
+  },
+  "xAxis": {
+    "type": "category",
+    "data": [
+      "周一",
+      "周二",
+      "周三",
+      "周四",
+      "周五",
+      "周六",
+      "周日"
+    ]
+  },
+  "yAxis": {
+    "type": "value",
+    "name": "°C"
+  },
+  "series": [
+    {
+      "name": "数据",
+      "type": "line",
+      "data": [
+        22,
+        25,
+        23,
+        21,
+        28,
+        30,
+        27
+      ],
+      "smooth": true,
+      "areaStyle": {
+        "opacity": 0.1
+      }
+    }
+  ]
+}

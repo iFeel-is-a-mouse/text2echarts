@@ -1,0 +1,38 @@
+{
+  "options": {
+    "theme": "vintage",
+    "width": 800,
+    "height": 500,
+    "bgColor": "#f5f5f5",
+    "slideMode": false
+  },
+  "title": {
+    "text": "市场份额分布",
+    "left": "center"
+  },
+  "tooltip": {
+    "trigger": "item",
+    "formatter": "{b}: {c} ({d}%)"
+  },
+  "series": [{
+    "type": "pie",
+    "radius": ["30%", "60%"],
+    "data": [
+      {"name": "Chrome", "value": 48},
+      {"name": "Firefox", "value": 22},
+      {"name": "Safari", "value": 18},
+      {"name": "Edge", "value": 8},
+      {"name": "其他", "value": 4}
+    ],
+    "label": {
+      "show": true,
+      "formatter": "{b}\n{d}%"
+    },
+    "emphasis": {
+      "label": {
+        "fontSize": 16,
+        "fontWeight": "bold"
+      }
+    }
+  }]
+}
