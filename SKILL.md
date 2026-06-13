@@ -11,7 +11,7 @@ description: >
   Supports 6 chart types: bar, line, pie, scatter, radar, wordcloud (via JSON).
   Trigger words: chart, graph, visualize, plot, draw, wordcloud, vent draw图表, 画图, 可视化, 图片, 矢量图, 词云.
 metadata:
-  version: "2.3.0"
+  version: "2.3.1"
   launch: "text2echarts.html"
   trigger-keywords:
     - chart
@@ -47,9 +47,9 @@ case when: user asks for a chart / graph / visualization (default):
   - Output HTML string directly, render with ```html code block
   - Support preview by opening in browser or screenshot
 
-  **Default route — direct HTML generation in chat:**
-
-  ![Pie chart generated in chat](assets/pie-chart.svg)
+  **Default route — direct HTML generation in chat.**
+  Example prompt: *"Give me a pie chart of browser market share — Chrome 65%, Safari 18%, Edge 8%, Firefox 5%, Other 4%"*
+  → The model outputs a complete HTML file with an interactive ECharts pie chart.
 
 case when: user asks for an image / picture / vector graphic (图片/矢量图):
   - Use CLI with SVG output: `node cli.js data.json --svg-output -o chart.svg`
@@ -339,13 +339,13 @@ After generating a chart:
 
 The model can generate multiple chart configurations in a single response — combining different chart types, color palettes, shapes, and styles all at once. For example, you can request a bar chart with 3 different themes, a word cloud with 5 shapes, or a side-by-side comparison of line vs bar for the same dataset — all produced in one go.
 
-**Bar Chart — independent style & palette switching in a single HTML:**
+**Bar Chart with multiple styles and palettes:**
 
-![Bar Chart Demo](assets/bar-chart.svg)
+Prompt: *"Give me a bar chart of monthly sales/profit, with buttons to switch between 6 styles (default, rounded, horizontal, stacked, dark, gradient) and 8 color palettes (default, warm, cool, pastel, vivid, forest, sunset, ocean)"*
 
-**Word Cloud — independent shape & palette switching in a single HTML:**
+**Word Cloud with multiple shapes and palettes:**
 
-![Word Cloud Demo](assets/wordcloud.svg)
+Prompt: *"Make a word cloud of AI/ML terms, with buttons to switch between 6 shapes (circle, heart, diamond, star, pentagon, triangle) and 8 color palettes"*
 
 ### 2. Full ECharts Series Support
 
