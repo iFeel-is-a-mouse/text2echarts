@@ -11,7 +11,7 @@ description: >
   Supports 6 chart types: bar, line, pie, scatter, radar, wordcloud (via JSON).
   Trigger words: chart, graph, visualize, plot, draw, wordcloud, vent draw图表, 画图, 可视化, 图片, 矢量图, 词云.
 metadata:
-  version: "2.2.3"
+  version: "2.2.4"
   launch: "text2echarts.html"
   trigger-keywords:
     - chart
@@ -80,7 +80,7 @@ case when: user asks for word cloud (词云):
   - Need word frequency data first (分词 + 词频统计)
   - Generate ECharts wordcloud option JSON with type:'wordCloud'
   - Then follow image/vector or html/web route based on output format request
-  - Point to `web/text2echarts.html`
+  - Point to `text2echarts.html`
   - Open in browser, use templates and export
 
 ---
@@ -97,7 +97,7 @@ case when: user asks for word cloud (词云):
 
 Generate ECharts SVG charts from JSON/CSV. Two entry points:
 
-**Web App**: Open `web/text2echarts.html` in browser for interactive GUI with templates, live preview, theme switching, and PNG/JPG/SVG export.
+**Web App**: Open `text2echarts.html` in browser for interactive GUI with templates, live preview, theme switching, and PNG/JPG/SVG export.
 
 **CLI**: `node cli.js` for scripted/batch generation.
 
@@ -109,7 +109,7 @@ Generate ECharts SVG charts from JSON/CSV. Two entry points:
 | "Visualize my sales data" | ✅ Natural language input works |
 | "Compare trends across months" | ✅ Line chart, multi-series |
 | "Show market share distribution" | ✅ Pie chart with % labels |
-| "I need an interactive chart dashboard" | ⚠️ Open web/text2echarts.html instead |
+| "I need an interactive chart dashboard" | ⚠️ Open text2echarts.html instead |
 | "Animate this chart frame by frame" | ❌ ECharts not designed for animation frames |
 | "Generate 100 charts in batch" | ✅ Use CLI: `for f in *.csv; do node cli.js \$f; done` |
 | "Real-time streaming data" | ❌ Use ECharts live update API directly |
@@ -118,7 +118,7 @@ Generate ECharts SVG charts from JSON/CSV. Two entry points:
 
 ```bash
 # Web App — open interactive GUI
-open web/text2echarts.html
+open text2echarts.html
 
 # CLI — CSV → chart
 node cli.js data.csv --open
@@ -277,7 +277,7 @@ For LLM-based chart generation, see `prompt.md` — a complete prompt engineerin
 
 ## Interactive Web App
 
-For a full GUI experience, open `web/text2echarts.html` in your browser.
+For a full GUI experience, open `text2echarts.html` in your browser.
 Features: live preview, templates, theme switching, export PNG/JPG/SVG.
 
 ```
