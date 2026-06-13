@@ -94,8 +94,9 @@ c.setOption(${JSON.stringify(chart.option)});
     await page.waitForSelector('svg', { timeout: 10000 });
     await page.waitForTimeout(1500);
     
-    const svgContent = await page.$eval('#chart', el => el.innerHTML);
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">\n${svgContent}\n</svg>`;
+    // Extract the actual ECharts SVG element (skip the wrapper div)
+    const svgContent = await page.$eval('#chart svg', el => el.outerHTML);
+    const svg = svgContent;
     
     const outPath = path.join(projectDir, 'assets', `${chart.name}.svg`);
     fs.writeFileSync(outPath, svg);

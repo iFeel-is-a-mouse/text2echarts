@@ -11,7 +11,7 @@ description: >
   Supports 6 chart types: bar, line, pie, scatter, radar, wordcloud (via JSON).
   Trigger words: chart, graph, visualize, plot, draw, wordcloud, vent draw图表, 画图, 可视化, 图片, 矢量图, 词云.
 metadata:
-  version: "2.2.9"
+  version: "2.3.0"
   launch: "text2echarts.html"
   trigger-keywords:
     - chart
