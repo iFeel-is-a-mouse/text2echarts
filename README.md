@@ -75,9 +75,13 @@ Open `text2echarts.html` in any modern browser. All dependencies bundled — wor
 
 The skill automatically routes requests to chart generation — HTML in chat by default, CLI for SVG/PNG export.
 
-**Direct HTML generation in chat:**
+**Inline skill documentation — help & discovery:**
 
-![Pie chart generated in chat](assets/pie-chart.svg)
+![text2echart help screen](assets/help-screen.jpg)
+
+**Direct HTML generation in chat — pie chart example:**
+
+![Pie chart generated in chat](assets/pie-chart.jpg)
 
 ---
 
@@ -121,11 +125,11 @@ The model can generate multiple chart configurations in a single response — co
 
 **Bar Chart — independent style & palette switching in a single HTML:**
 
-![Bar Chart Demo](assets/bar-chart.svg)
+![Bar Chart Demo](assets/bar-chart.jpg)
 
 **Word Cloud — independent shape & palette switching in a single HTML:**
 
-![Word Cloud Demo](assets/wordcloud.svg)
+![Word Cloud Demo](assets/wordcloud.jpg)
 
 ### 2. Full ECharts Series Support
 
