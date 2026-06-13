@@ -11,7 +11,7 @@ description: >
   Supports 6 chart types: bar, line, pie, scatter, radar, wordcloud (via JSON).
   Trigger words: chart, graph, visualize, plot, draw, wordcloud, vent draw图表, 画图, 可视化, 图片, 矢量图, 词云.
 metadata:
-  version: "2.2.7"
+  version: "2.2.8"
   launch: "text2echarts.html"
   trigger-keywords:
     - chart
@@ -49,11 +49,11 @@ case when: user asks for a chart / graph / visualization (default):
 
   **Default route — direct HTML generation in chat:**
 
-  ![Pie chart generated in chat](assets/pie-chat-demo.jpg)
+  ![Pie chart generated in chat](assets/pie-chat-demo.svg)
 
   **Help & discovery — inline skill documentation:**
 
-  ![text2echart help screen](assets/help-screen.jpg)
+  ![text2echart help screen](assets/help-screen.svg)
 
 case when: user asks for an image / picture / vector graphic (图片/矢量图):
   - Use CLI with SVG output: `node cli.js data.json --svg-output -o chart.svg`
@@ -345,11 +345,11 @@ The model can generate multiple chart configurations in a single response — co
 
 **Bar Chart — independent style & palette switching in a single HTML:**
 
-![Bar Chart Demo](assets/bar-chart-demo.jpg)
+![Bar Chart Demo](assets/bar-chart-demo.svg)
 
 **Word Cloud — independent shape & palette switching in a single HTML:**
 
-![Word Cloud Demo](assets/wordcloud-demo.jpg)
+![Word Cloud Demo](assets/wordcloud-demo.svg)
 
 ### 2. Full ECharts Series Support
 

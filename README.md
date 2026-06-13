@@ -77,11 +77,11 @@ The skill automatically routes requests to chart generation — HTML in chat by 
 
 **Direct HTML generation in chat — pie chart example:**
 
-![Pie chart generated in chat](assets/pie-chat-demo.jpg)
+![Pie chart generated in chat](assets/pie-chat-demo.svg)
 
 **Inline skill documentation — help & discovery:**
 
-![text2echart help screen](assets/help-screen.jpg)
+![text2echart help screen](assets/help-screen.svg)
 
 ---
 
@@ -125,11 +125,11 @@ The model can generate multiple chart configurations in a single response — co
 
 **Bar Chart — independent style & palette switching in a single HTML:**
 
-![Bar Chart Demo](assets/bar-chart-demo.jpg)
+![Bar Chart Demo](assets/bar-chart-demo.svg)
 
 **Word Cloud — independent shape & palette switching in a single HTML:**
 
-![Word Cloud Demo](assets/wordcloud-demo.jpg)
+![Word Cloud Demo](assets/wordcloud-demo.svg)
 
 ### 2. Full ECharts Series Support
 
