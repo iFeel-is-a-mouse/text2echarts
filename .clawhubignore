@@ -3,4 +3,9 @@ node_modules/
 test/
 .git/
 .clawhubignore
-render-svg.js
+.clawhub/
+_meta.json
+examples/
+scripts/
+package-lock.json
+.gitignore

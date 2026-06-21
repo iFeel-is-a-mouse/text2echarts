@@ -216,8 +216,15 @@ text2echart/
 │   ├── test-all.js        # Playwright 批处理测试
 │   └── test-all.sh        # 轻量验证脚本
 │
-└── docs/                  # 设计文档（gitignored）
+├── examples/              # 内部参考（不发布）
+│   ├── input/             #   测试用例输入
+│   ├── expected/          #   期望输出
+│   └── *.md               #   项目调研/参考文章
+│
+└── docs/                  # 设计文档（不发布）
     ├── design.md          # 本文件
     ├── spec.md            # 规格说明
     └── journey.md         # 过程日志
 ```
+
+> **约定:** `examples/` 和 `docs/` 均为内部资料，不面向最终用户。`examples/` 用于项目启动前的调研参考和开发中的输入/输出验证。两者均通过 `.clawhubignore` 排除发布，通过 `.gitignore` 保留在版本库中。
